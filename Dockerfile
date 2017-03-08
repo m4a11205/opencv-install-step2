@@ -1,19 +1,18 @@
-FROM m4a11205/opencv-step1
-MAINTAINER Brandon Amos <brandon.amos.cs@gmail.com>
+# Security Cam v2
+#  - Finds ip address webcam - used for detecting motion
+# Version 1.10.00
+FROM paradrop/workshop
+MAINTAINER Paradrop Team <info@paradrop.io>
 
-RUN cd ~ && \
-    mkdir -p ocv-tmp && \
-    cd ocv-tmp && \
-    curl -L https://github.com/Itseez/opencv/archive/2.4.11.zip -o ocv.zip && \
-    unzip ocv.zip && \
-    cd opencv-2.4.11 && \
-    mkdir release && \
-    cd release && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE \
-          -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D BUILD_PYTHON_SUPPORT=ON \
-          .. && \
-    make -j8 && \
-    make install && \
-    rm -rf ~/ocv-tmp
+# Install dependencies.  You can add additional packages here following the example.
+RUN apt-get update && apt-get install -y \
+#	<package> \
+	nodejs \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
 
+ADD chute/*.py /usr/local/bin/.
+ADD chute/run.sh /usr/local/bin/run.sh
+
+
+CMD ["/bin/bash", "/usr/local/bin/run.sh"]
